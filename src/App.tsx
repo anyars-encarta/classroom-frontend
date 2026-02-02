@@ -47,6 +47,14 @@ function App() {
                   // show: "/subjects/show/:id",
                   meta: { label: "Subjects", icon: <BookOpen /> },
                 },
+                // {
+                //   name: "departments",
+                //   list: "/departments",
+                //   create: "/departments/create",
+                //   // edit: "/departments/edit/:id",
+                //   // show: "/departments/show/:id",
+                //   meta: { label: "Departments" },
+                // }
               ]}
             >
               <Routes>

@@ -1,5 +1,6 @@
 import { CreateButton } from "@/components/refine-ui/buttons/create";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { DataTableFilterCombobox } from "@/components/refine-ui/data-table/data-table-filter";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { ListView } from "@/components/refine-ui/views/list-view";
 import { Badge } from "@/components/ui/badge";
@@ -10,16 +11,16 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { DEPARTMENT_OPTIONS } from "@/constants";
 import { Subject } from "@/types";
 import { SelectValue } from "@radix-ui/react-select";
 import { useTable } from "@refinedev/react-table";
 import { ColumnDef } from "@tanstack/table-core";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const SubjectsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [departments, setDepartments] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("all");
 
   const departmentFilter =
@@ -65,9 +66,24 @@ const SubjectsList = () => {
         },
         {
           id: "department",
-          accessorKey: "department",
+          accessorKey: "department.name",
           size: 150,
-          header: () => <p className="column-title">Department</p>,
+          header: ({ column }) => (
+            <div className="flex items-center gap-1">
+              <span>Department</span>
+              <DataTableFilterCombobox
+                column={column}
+                defaultOperator="eq"
+                options={
+                  departments?.map(({ name }: { name: string }) => ({
+                    label: name,
+                    value: String(name),
+                  })) || []
+                }
+                placeholder="Filter by department"
+              />
+            </div>
+          ),
           cell: ({ getValue }) => (
             <Badge variant="secondary">{getValue<string>()}</Badge>
           ),
@@ -91,12 +107,18 @@ const SubjectsList = () => {
         permanent: [...departmentFilter, ...searchFilter],
       },
       sorters: {
-        initial: [
-          { field: 'id', order: 'desc' },
-        ]
+        initial: [{ field: "id", order: "desc" }],
       },
     },
   });
+
+  useEffect(() => {
+    // Fetch departments from the backend API
+    fetch("api/departments")
+      .then((res) => res.json())
+      .then((data) => setDepartments(data.data))
+      .catch((error) => console.error("Error fetching departments:", error));
+  }, []);
 
   return (
     <ListView>
@@ -131,11 +153,13 @@ const SubjectsList = () => {
 
               <SelectContent>
                 <SelectItem value="all">All Departments</SelectItem>
-                {DEPARTMENT_OPTIONS.map((dept) => (
-                  <SelectItem key={dept.value} value={dept.value}>
-                    {dept.label}
-                  </SelectItem>
-                ))}
+                {departments.map(
+                  ({ id, name }: { id: number; name: string }) => (
+                    <SelectItem key={id} value={name}>
+                      {name}
+                    </SelectItem>
+                  ),
+                )}
               </SelectContent>
             </Select>
 

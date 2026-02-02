@@ -1,7 +1,7 @@
 const CreateSubject = () => {
   return (
     <div>
-      CreateSubject
+      Create Subject
     </div>
   )
 }

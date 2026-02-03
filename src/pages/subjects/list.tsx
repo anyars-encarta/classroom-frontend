@@ -75,7 +75,7 @@ const SubjectsList = () => {
                 column={column}
                 defaultOperator="eq"
                 options={
-                  departments?.map(( name: string ) => ({
+                  departments?.map(( {name}: { name: string} ) => ({
                     label: name,
                     value: String(name),
                   })) || []

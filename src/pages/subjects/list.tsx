@@ -98,7 +98,7 @@ const SubjectsList = () => {
           ),
         },
       ],
-      [],
+      [departments],
     ),
     refineCoreProps: {
       resource: "subjects",

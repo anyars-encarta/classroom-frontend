@@ -76,39 +76,27 @@ export const REFRESH_TOKEN_URL = `${BASE_URL}/refresh-token`;
 export const CLOUDINARY_UPLOAD_PRESET = getEnvVar("VITE_CLOUDINARY_UPLOAD_PRESET");
 
 export const teachers = [
-    {
-        id: "1",
-        name: "John Doe",
-    },
-    {
-        id: "2",
-        name: "Jane Smith",
-    },
-    {
-        id: "3",
-        name: "Dr. Alan Turing",
-    },
+  { id: 1, name: "Dr. Sarah Johnson" },
+  { id: 2, name: "Prof. Michael Chen" },
+  { id: 3, name: "Ms. Emily Rodriguez" },
+  { id: 4, name: "Mr. David Thompson" },
+  { id: 5, name: "Dr. Amanda Williams" },
+  { id: 6, name: "Prof. Robert Martinez" },
+  { id: 7, name: "Ms. Jennifer Davis" },
+  { id: 8, name: "Mr. Christopher Lee" },
+  { id: 9, name: "Dr. Patricia Anderson" },
+  { id: 10, name: "Prof. James Wilson" }
 ];
 
 export const subjects = [
-    {
-        id: 1,
-        name: "Mathematics",
-        code: "MATH",
-    },
-    {
-        id: 2,
-        name: "Computer Science",
-        code: "CS",
-    },
-    {
-        id: 3,
-        name: "Physics",
-        code: "PHY",
-    },
-    {
-        id: 4,
-        name: "Chemistry",
-        code: "CHEM",
-    },
+  { id: 1, name: "Mathematics", code: "MATH" },
+  { id: 2, name: "Computer Science", code: "CS" },
+  { id: 3, name: "English Literature", code: "ENGLIT" },
+  { id: 4, name: "Physical Education", code: "PE" },
+  { id: 5, name: "Biology", code: "BIO" },
+  { id: 6, name: "Chemistry", code: "CHEM" },
+  { id: 7, name: "Physics", code: "PHYS" },
+  { id: 8, name: "World History", code: "HIST" },
+  { id: 9, name: "Spanish Language", code: "SPAN" },
+  { id: 10, name: "Art and Design", code: "ART" }
 ];

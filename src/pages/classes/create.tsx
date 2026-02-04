@@ -28,6 +28,7 @@ import {
 import { subjects, teachers } from "@/constants";
 import { Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import UploadWidget from "@/components/upload-widget";
 
 const CreateClass = () => {
   const back = useBack();
@@ -38,23 +39,23 @@ const CreateClass = () => {
       resource: "classes",
       action: "create",
     },
-    defaultValues: {
-      // name: "",
-      // description: "",
-      // subjectId: 0,
-      // teacherId: "",
-      // capacity: 0,
-      status: "active",
-      // bannerUrl: "",
-      // bannerCldPubId: "",
-      // inviteCode: "",
-      // schedules: [],
-    },
+    // defaultValues: {
+    //   // name: "",
+    //   // description: "",
+    //   // subjectId: 0,
+    //   // teacherId: "",
+    //   // capacity: 0,
+    //   status: "active",
+    //   // bannerUrl: "",
+    //   // bannerCldPubId: "",
+    //   // inviteCode: "",
+    //   // schedules: [],
+    // },
   });
 
   const {
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     control,
   } = form;
 
@@ -66,6 +67,24 @@ const CreateClass = () => {
     }
   };
 
+  const bannerPublicId = form.watch("bannerCldPubId");
+
+  const setBannerImage = (file, field) => {
+    if (file) {
+      field.onChange(file.url);
+      form.setValue('bannerCldPubId', file.publicId, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    } else {
+      field.onChange('');
+      form.setValue('bannerCldPubId', '', {
+        shouldValidate: true,
+        shouldDirty: true,
+      })
+    }
+  };
+
   return (
     <CreateView className="class-view">
       <Breadcrumb />
@@ -74,7 +93,9 @@ const CreateClass = () => {
 
       <div className="intro-row">
         <p>Provide the required information below to add a class.</p>
-        <Button onClick={back} className="cursor-pointer">Go Back</Button>
+        <Button onClick={back} className="cursor-pointer">
+          Go Back
+        </Button>
       </div>
 
       <Separator />
@@ -92,12 +113,36 @@ const CreateClass = () => {
           <CardContent className="mt-7">
             <Form {...form}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="space-y-3">
-                  <Label>
-                    Banner Image <span className="text-orange-600">*</span>
-                    <p>Upload image widget</p>
-                  </Label>
-                </div>
+                <FormField
+                  control={control}
+                  name="bannerUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Banner Image <span className="text-orange-600">*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <UploadWidget
+                          value={
+                            field.value
+                              ? {
+                                  url: field.value,
+                                  publicId: bannerPublicId ?? "",
+                                }
+                              : null
+                          }
+                          onChange={(file: any) => setBannerImage(file, field)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      {errors.bannerCldPubId && !errors.bannerUrl && (
+                        <p className="text-destructive text-sm">
+                          {errors.bannerCldPubId.message?.toString()}
+                        </p>
+                      )}
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={control}
@@ -265,7 +310,11 @@ const CreateClass = () => {
 
                 <Separator />
 
-                <Button type="submit" size="lg" className="w-full cursor-pointer">
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full cursor-pointer"
+                >
                   {isSubmitting ? (
                     <div className="flex gap-1">
                       <span>Creating Class...</span>

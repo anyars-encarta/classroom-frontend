@@ -162,8 +162,12 @@
         }
 
         button {
-            @apply absolute top-2 right-3 z-10 cursor-pointer;
+            @apply absolute top-2 right-3 z-10 cursor-pointer text-red-500 hover:text-red-700;
         }
+    }
+
+    .remove-cloudinary-image {
+            @apply absolute top-2 right-3 z-10 cursor-pointer text-red-500 hover:text-red-700;
     }
 
     .class-show {

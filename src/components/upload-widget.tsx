@@ -89,7 +89,7 @@ const UploadWidget = ({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ token: deleteToken }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -116,12 +116,14 @@ const UploadWidget = ({
             alt="Uploaded file"
             className="uploaded-image"
           />
-          <span
+          <button
+            type="button"
             onClick={removeFromCloudinary}
-            className="remove-cloudinary-image"
+            aria-label="Remove uploaded image"
+            disabled={isRemoving}
           >
             x
-          </span>
+          </button>
         </div>
       ) : (
         <div

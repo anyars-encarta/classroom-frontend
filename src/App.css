@@ -166,10 +166,6 @@
         }
     }
 
-    .remove-cloudinary-image {
-            @apply absolute top-2 right-3 z-10 cursor-pointer text-red-500 hover:text-red-700;
-    }
-
     .class-show {
         .state-message {
             @apply mt-6 text-sm text-muted-foreground;

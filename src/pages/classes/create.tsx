@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { useBack } from "@refinedev/core";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm } from "@refinedev/react-hook-form";
 import { classSchema } from "@/lib/schema";
 import {
   Form,
@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -69,7 +68,7 @@ const CreateClass = () => {
 
   const bannerPublicId = form.watch("bannerCldPubId");
 
-  const setBannerImage = (file, field) => {
+  const setBannerImage = (file: any, field: any) => {
     if (file) {
       field.onChange(file.url);
       form.setValue('bannerCldPubId', file.publicId, {

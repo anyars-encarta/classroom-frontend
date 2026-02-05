@@ -1,4 +1,8 @@
-import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET } from "@/constants";
+import {
+  BACKEND_BASE_URL,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_UPLOAD_PRESET,
+} from "@/constants";
 import { UploadWidgetValue } from "@/types";
 import { UploadCloud } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -16,12 +20,12 @@ const UploadWidget = ({
   const onChangeRef = useRef(onChange);
 
   const [preview, setPreview] = useState<UploadWidgetValue | null>(value);
-  const [deleteToken, setDeleteToken] = useState<string | null>(null);
+  const [publicId, setPublicId] = useState<string | null>(null);
   const [isRemoving, setIsRemoving] = useState(false);
 
   useEffect(() => {
     setPreview(value);
-    if (!value) setDeleteToken(null);
+    if (!value) setPublicId(null);
   }, [value]);
 
   useEffect(() => {
@@ -43,6 +47,7 @@ const UploadWidget = ({
           maxFileSize: 5 * 1024 * 1024, // 5MB
           clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
           sources: ["local", "url", "camera", "google_drive", "dropbox"],
+          return_delete_token: true,
         },
         (error, result) => {
           if (!error && result.event === "success") {
@@ -52,8 +57,10 @@ const UploadWidget = ({
             };
 
             setPreview(payload);
-            setDeleteToken(result.info.delete_token ?? null);
+            setPublicId(result.info.public_id);
             onChangeRef.current?.(payload);
+
+            console.log("upload result:", result);
           }
         },
       );
@@ -70,33 +77,30 @@ const UploadWidget = ({
     }, 500);
 
     return () => window.clearInterval(intervalId);
-  }, []);
+  }, [publicId]);
 
   const openWidget = () => {
     if (!disabled) widgetRef.current?.open();
   };
 
   const removeFromCloudinary = async () => {
-    if (deleteToken && !isRemoving) {
+    if (publicId && !isRemoving) {
       try {
         setIsRemoving(true);
 
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/delete_by_token`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ token: deleteToken }),
+        const response = await fetch(`${BACKEND_BASE_URL}cloudinary/delete`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+          body: JSON.stringify({ publicId }),
+        });
 
         if (!response.ok) {
           throw new Error("Failed to delete image from Cloudinary");
         }
 
-        setDeleteToken(null);
+        setPublicId(null);
         setPreview(null);
         onChangeRef.current?.(null);
       } catch (error) {
@@ -116,14 +120,18 @@ const UploadWidget = ({
             alt="Uploaded file"
             className="uploaded-image"
           />
-          <button
-            type="button"
-            onClick={removeFromCloudinary}
-            aria-label="Remove uploaded image"
-            disabled={isRemoving}
-          >
-            x
-          </button>
+          {!isRemoving && (
+            <button
+              type="button"
+              onClick={removeFromCloudinary}
+              aria-label="Remove uploaded image"
+              disabled={isRemoving}
+            >
+              x
+            </button>
+          )}
+        
+          {isRemoving && <span class>Removing image...</span>}
         </div>
       ) : (
         <div

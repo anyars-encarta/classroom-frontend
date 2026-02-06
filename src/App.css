@@ -166,7 +166,7 @@
         }
 
         span {
-            @apply absolute top-2 right-3 z-10 text-primary text-sm font-semibold bg-primary-foreground px-2 py-1 rounded-md;
+            @apply absolute top-2 right-3 z-10 text-red-500 text-sm font-semibold bg-primary-foreground px-2 py-1 rounded-md;
         }
     }
 

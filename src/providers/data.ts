@@ -38,6 +38,8 @@ const options: CreateDataProviderOptions = {
       filters?.forEach((filter) => {
         const field = 'field' in filter ? filter.field : '';
 
+        if (filter.value == null) return;
+        
         const value = String(filter.value)
         if (resource === "subjects") {
           if (field === "department") params.department = value;
@@ -69,45 +71,3 @@ const options: CreateDataProviderOptions = {
 const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
 
 export { dataProvider };
-
-// import { MOCK_SUBJECTS } from "@/constants";
-// import {
-//   BaseRecord,
-//   DataProvider,
-//   GetListParams,
-//   GetListResponse,
-// } from "@refinedev/core";
-
-// export const dataProvider: DataProvider = {
-//   getList: async <TData extends BaseRecord = BaseRecord>({
-//     resource,
-//   }: GetListParams): Promise<GetListResponse<TData>> => {
-//     // Implementation for fetching a list of resources
-//     if (resource !== "subjects") {
-//       return { data: [] as TData[], total: 0 };
-//     }
-
-//     return {
-//       data: MOCK_SUBJECTS as unknown as TData[],
-//       total: MOCK_SUBJECTS.length,
-//     };
-//   },
-
-//   getOne: async () => {
-//     throw new Error("This function is not present in mock");
-//   },
-
-//   create: async () => {
-//     throw new Error("This function is not present in mock");
-//   },
-
-//   update: async () => {
-//     throw new Error("This function is not present in mock");
-//   },
-
-//   deleteOne: async () => {
-//     throw new Error("This function is not present in mock");
-//   },
-
-//   getApiUrl: () => "",
-// };

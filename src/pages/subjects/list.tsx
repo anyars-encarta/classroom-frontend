@@ -153,7 +153,7 @@ const SubjectsList = () => {
 
               <SelectContent>
                 <SelectItem value="all">All Departments</SelectItem>
-                {departments.map(
+                {departments?.map(
                   ({ id, name }: { id: number; name: string }) => (
                     <SelectItem key={id} value={name}>
                       {name}

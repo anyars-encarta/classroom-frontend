@@ -59,8 +59,6 @@ const UploadWidget = ({
             setPreview(payload);
             setPublicId(result.info.public_id);
             onChangeRef.current?.(payload);
-
-            console.log("upload result:", result);
           }
         },
       );
@@ -131,7 +129,7 @@ const UploadWidget = ({
             </button>
           )}
         
-          {isRemoving && <span class>Removing image...</span>}
+          {isRemoving && <span>Removing image...</span>}
         </div>
       ) : (
         <div

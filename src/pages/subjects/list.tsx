@@ -11,16 +11,16 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { Subject } from "@/types";
+import { Department, Subject } from "@/types";
 import { SelectValue } from "@radix-ui/react-select";
+import { useList } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import { ColumnDef } from "@tanstack/table-core";
 import { Search } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const SubjectsList = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [departments, setDepartments] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("all");
 
   const departmentFilter =
@@ -43,6 +43,19 @@ const SubjectsList = () => {
         },
       ]
     : [];
+
+    const { query: departmentsQuery } = useList<Department>({
+      resource: "departments",
+      pagination: {
+        pageSize: 100,
+      },
+    });
+
+  const departments = useMemo(
+    () => departmentsQuery?.data?.data ?? [],
+    [departmentsQuery?.data?.data],
+  );
+  const departmentsLoading = departmentsQuery?.isLoading ?? false;
 
   const subjectTable = useTable<Subject>({
     columns: useMemo<ColumnDef<Subject>[]>(
@@ -112,14 +125,6 @@ const SubjectsList = () => {
     },
   });
 
-  useEffect(() => {
-    // Fetch departments from the backend API
-    fetch("api/departments")
-      .then((res) => res.json())
-      .then((data) => setDepartments(data.data))
-      .catch((error) => console.error("Error fetching departments:", error));
-  }, []);
-
   return (
     <ListView>
       <Breadcrumb />
@@ -146,6 +151,7 @@ const SubjectsList = () => {
             <Select
               value={selectedDepartment}
               onValueChange={setSelectedDepartment}
+              disabled={departmentsLoading}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Filter by department" />

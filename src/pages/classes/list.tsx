@@ -72,7 +72,7 @@ const ClassesList = () => {
   const { query: subjectsQuery } = useList<Subject>({
     resource: "subjects",
     pagination: {
-      pageSize: 100,
+      pageSize: 1000,
     },
   });
 
@@ -86,7 +86,7 @@ const ClassesList = () => {
       },
     ],
     pagination: {
-      pageSize: 100,
+      pageSize: 1000,
     },
   });
 
@@ -115,7 +115,7 @@ const ClassesList = () => {
             return url ? (
               <div className="flex items-center justify-center ml-2">
                 <img
-                  src={url || "/placeholder-class.png"}
+                  src={url}
                   alt="Class banner"
                   className="w-10 h-10 object-cover rounded"
                 />

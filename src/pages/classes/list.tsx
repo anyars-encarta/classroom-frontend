@@ -22,6 +22,7 @@ import { useMemo, useState } from "react";
 interface ClassRecord {
   id: number;
   name: string;
+  bannerUrl?: string | null;
   inviteCode: string;
   description?: string;
   capacity: number;

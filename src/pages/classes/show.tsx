@@ -46,15 +46,15 @@ const ClassShow = () => {
     teacherInitials || "NA",
   )}`;
 
-  const { name, description, status, capacity, bannerUrl, bannerCldPubId, subject, teacher, department } = classDetails;
+  const { name, description, status, capacity, bannerCldPubId, subject, teacher, department } = classDetails;
 
   return (
     <ShowView className="class-view class-show">
       <ShowViewHeader resource="classes" title="Class Details" />
 
       <div className="banner">
-        {bannerUrl ? (
-          <AdvancedImage alt="Class Banner" cldImg={bannerPhoto(bannerCldPubId ?? "", name)} />
+        {bannerCldPubId ? (
+          <AdvancedImage alt="Class Banner" cldImg={bannerPhoto(bannerCldPubId, name)} />
         ) : (
           <div className="placeholder" />
         )}

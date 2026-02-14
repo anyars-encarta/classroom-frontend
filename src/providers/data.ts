@@ -92,7 +92,7 @@ const options: CreateDataProviderOptions = {
 
       const json: GetOneResponse = await response.json();
 
-      return json.data ?? [];
+      return json.data ?? null;
     },
   },
 }

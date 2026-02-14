@@ -1,4 +1,7 @@
+import ActionButton from "@/components/actionButton";
 import { CreateButton } from "@/components/refine-ui/buttons/create";
+import { DeleteButton } from "@/components/refine-ui/buttons/delete";
+import { ShowButton } from "@/components/refine-ui/buttons/show";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import { DataTableFilterCombobox } from "@/components/refine-ui/data-table/data-table-filter";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
@@ -214,25 +217,23 @@ const ClassesList = () => {
             <span className="text-foreground">{getValue<number>()}</span>
           ),
         },
-        // {
-        //   id: "inviteCode",
-        //   accessorKey: "inviteCode",
-        //   size: 120,
-        //   header: () => <p className="column-title ml-2">Code</p>,
-        //   cell: ({ getValue }) => <Badge>{getValue<string>()}</Badge>,
-        // },
-        
-        // {
-        //   id: "description",
-        //   accessorKey: "description",
-        //   size: 300,
-        //   header: () => <p className="column-title">Description</p>,
-        //   cell: ({ getValue }) => (
-        //     <span className="truncate line-clamp-2 text-foreground">
-        //       {getValue<string>() || "—"}
-        //     </span>
-        //   ),
-        // },
+        {
+          id: 'actions',
+          size: 140,
+          header: () => <p className="column-title">Actions</p>,
+          cell: ({ row }) => {
+            return (
+              <div className="flex items-center gap-2">
+                <ShowButton resource="classes" recordItemId={row.original.id} variant="outline" size="sm">
+                  <ActionButton type="view" />
+                </ShowButton>
+                <DeleteButton recordItemId={row.original.id} variant="outline" size="sm">
+                  <ActionButton type="delete" />
+                </DeleteButton>
+              </div>
+          );
+          },
+        },
       ],
       [subjects, teachers],
     ),

@@ -120,7 +120,7 @@ const ClassShow = () => {
             </ol>
         </div>
 
-        <Button size="lg" className="w-full">Join Class</Button>
+        <Button size="lg" className="w-full cursor-pointer">Join Class</Button>
       </Card>
     </ShowView>
   );

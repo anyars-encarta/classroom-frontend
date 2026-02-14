@@ -227,7 +227,7 @@ const ClassesList = () => {
                 <ShowButton resource="classes" recordItemId={row.original.id} variant="outline" size="sm">
                   <ActionButton type="view" />
                 </ShowButton>
-                <DeleteButton recordItemId={row.original.id} variant="outline" size="sm">
+                <DeleteButton recordItemId={row.original.id} variant="outline" size="sm" className="cursor-pointer">
                   <ActionButton type="delete" />
                 </DeleteButton>
               </div>

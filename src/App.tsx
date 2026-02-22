@@ -1,9 +1,10 @@
-import { Refine } from "@refinedev/core";
+import { Authenticated, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import routerProvider, {
   DocumentTitleHandler,
+  NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
@@ -13,14 +14,25 @@ import { useNotificationProvider } from "./components/refine-ui/notification/use
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import { dataProvider } from "./providers/data";
 import Dashboard from "./pages/dashboard";
-import { BookOpen, GraduationCap, Home } from "lucide-react";
+import { BookOpen, Building2, ClipboardCheck, GraduationCap, Home, Users } from "lucide-react";
 import { Layout } from "./components/refine-ui/layout/layout";
 import SubjectsList from "./pages/subjects/list";
 import CreateSubject from "./pages/subjects/create";
 import ClassesList from "./pages/classes/list";
 import CreateClass from "./pages/classes/create";
-import ClassDetails from "./pages/classes/show";
-import EditClass from "./pages/classes/edit";
+import SubjectsShow from "./pages/subjects/show";
+import Login from "./pages/login";
+import Register from "./pages/register";
+import DepartmentsCreate from "./pages/departments/create";
+import DepartmentsList from "./pages/departments/list";
+import DepartmentsShow from "./pages/departments/show";
+import FacultyList from "./pages/faculty/list";
+import FacultyShow from "./pages/faculty/show";
+import ClassShow from "./pages/classes/show";
+import EnrollmentsCreate from "./pages/enrollments/create";
+import EnrollmentsJoin from "./pages/enrollments/join";
+import EnrollmentConfirm from "./pages/enrollments/confirm";
+import { authProvider } from "./providers/auth";
 
 function App() {
   return (
@@ -30,6 +42,7 @@ function App() {
           <DevtoolsProvider>
             <Refine
               dataProvider={dataProvider}
+              authProvider={authProvider}
               notificationProvider={useNotificationProvider()}
               routerProvider={routerProvider}
               options={{
@@ -41,52 +54,111 @@ function App() {
                 {
                   name: "dashboard",
                   list: "/",
-                  meta: { label: "Home", icon: <Home /> },
+                  meta: {
+                    label: "Home",
+                    icon: <Home />,
+                  },
                 },
                 {
                   name: "subjects",
                   list: "/subjects",
                   create: "/subjects/create",
-                  // edit: "/subjects/edit/:id",
-                  // show: "/subjects/show/:id",
-                  meta: { label: "Subjects", icon: <BookOpen /> },
+                  show: "/subjects/show/:id",
+                  meta: {
+                    label: "Subjects",
+                    icon: <BookOpen />,
+                  },
+                },
+                {
+                  name: "departments",
+                  list: "/departments",
+                  show: "/departments/show/:id",
+                  create: "/departments/create",
+                  meta: {
+                    label: "Departments",
+                    icon: <Building2 />,
+                  },
+                },
+                {
+                  name: "users",
+                  list: "/faculty",
+                  show: "/faculty/show/:id",
+                  meta: {
+                    label: "Faculty",
+                    icon: <Users />,
+                  },
+                },
+                {
+                  name: "enrollments",
+                  list: "/enrollments/create",
+                  create: "/enrollments/create",
+                  meta: {
+                    label: "Enrollments",
+                    icon: <ClipboardCheck />,
+                  },
                 },
                 {
                   name: "classes",
                   list: "/classes",
                   create: "/classes/create",
                   show: "/classes/show/:id",
-                  edit: "/classes/edit/:id",
-                  meta: { label: "Classes", icon: <GraduationCap /> },
+                  meta: {
+                    label: "Classes",
+                    icon: <GraduationCap />,
+                  },
                 },
-                // {
-                //   name: "departments",
-                //   list: "/departments",
-                //   create: "/departments/create",
-                //   // edit: "/departments/edit/:id",
-                //   // show: "/departments/show/:id",
-                //   meta: { label: "Departments" },
-                // }
               ]}
             >
               <Routes>
                 <Route
                   element={
-                    <Layout>
-                      <Outlet />
-                    </Layout>
+                    <Authenticated key="public-routes" fallback={<Outlet />}>
+                      <NavigateToResource fallbackTo="/" />
+                    </Authenticated>
+                  }
+                >
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                </Route>
+
+                <Route
+                  element={
+                    <Authenticated key="private-routes" fallback={<Login />}>
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    </Authenticated>
                   }
                 >
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/subjects">
+
+                  <Route path="subjects">
                     <Route index element={<SubjectsList />} />
                     <Route path="create" element={<CreateSubject />} />
+                    <Route path="show/:id" element={<SubjectsShow />} />
                   </Route>
-                  <Route path="/classes">
+
+                  <Route path="departments">
+                    <Route index element={<DepartmentsList />} />
+                    <Route path="create" element={<DepartmentsCreate />} />
+                    <Route path="show/:id" element={<DepartmentsShow />} />
+                  </Route>
+
+                  <Route path="faculty">
+                    <Route index element={<FacultyList />} />
+                    <Route path="show/:id" element={<FacultyShow />} />
+                  </Route>
+
+                  <Route path="enrollments">
+                    <Route path="create" element={<EnrollmentsCreate />} />
+                    <Route path="join" element={<EnrollmentsJoin />} />
+                    <Route path="confirm" element={<EnrollmentConfirm />} />
+                  </Route>
+
+                  <Route path="classes">
                     <Route index element={<ClassesList />} />
                     <Route path="create" element={<CreateClass />} />
-                    <Route path="show/:id" element={<ClassDetails />} />
-                    <Route path="edit/:id" element={<EditClass />} />
+                    <Route path="show/:id" element={<ClassShow />} />
                   </Route>
                 </Route>
               </Routes>

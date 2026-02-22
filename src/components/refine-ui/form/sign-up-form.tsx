@@ -90,7 +90,7 @@ export const SignUpForm = () => {
         )}
       </div>
 
-      <Card className={cn("sm:w-[456px]", "p-12", "mt-6")}>
+      <Card className={cn("sm:w-114", "p-12", "mt-6")}>
         <CardHeader className={cn("px-0")}>
           <CardTitle
             className={cn(
@@ -105,7 +105,7 @@ export const SignUpForm = () => {
           <CardDescription
             className={cn("text-muted-foreground", "font-medium")}
           >
-            Welcome to lorem ipsum dolor.
+            Welcome to the Classroom Management System.
           </CardDescription>
         </CardHeader>
 

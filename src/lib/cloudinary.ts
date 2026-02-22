@@ -14,9 +14,9 @@ const cld = new Cloudinary({
   },
 });
 
-export const bannerPhoto = (imageCldPubId: string, name: string) => {
+export const bannerPhoto = (bannerCldPubId: string, name: string) => {
   return cld
-    .image(imageCldPubId)
+    .image(bannerCldPubId)
     .resize(fill())
     .delivery(format("auto"))
     .delivery(quality("auto"))

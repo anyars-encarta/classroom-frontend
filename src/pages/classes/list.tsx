@@ -1,6 +1,6 @@
 import ActionButton from "@/components/actionButton";
 import { CreateButton } from "@/components/refine-ui/buttons/create";
-import { DeleteButton } from "@/components/refine-ui/buttons/delete";
+// import { DeleteButton } from "@/components/refine-ui/buttons/delete";
 import { ShowButton } from "@/components/refine-ui/buttons/show";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import { DataTableFilterCombobox } from "@/components/refine-ui/data-table/data-table-filter";
@@ -227,9 +227,9 @@ const ClassesList = () => {
                 <ShowButton resource="classes" recordItemId={row.original.id} variant="outline" size="sm">
                   <ActionButton type="view" />
                 </ShowButton>
-                <DeleteButton resource="classes" recordItemId={row.original.id} variant="outline" size="sm" className="cursor-pointer">
+                {/* <DeleteButton resource="classes" recordItemId={row.original.id} variant="outline" size="sm" className="cursor-pointer">
                   <ActionButton type="delete" />
-                </DeleteButton>
+                </DeleteButton> */}
               </div>
           );
           },

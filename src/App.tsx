@@ -33,6 +33,8 @@ import EnrollmentsCreate from "./pages/enrollments/create";
 import EnrollmentsJoin from "./pages/enrollments/join";
 import EnrollmentConfirm from "./pages/enrollments/confirm";
 import { authProvider } from "./providers/auth";
+import UpdateSubject from "./pages/subjects/edit";
+import UpdateClass from "./pages/classes/edit";
 
 function App() {
   return (
@@ -64,6 +66,7 @@ function App() {
                   list: "/subjects",
                   create: "/subjects/create",
                   show: "/subjects/show/:id",
+                  edit: "/subjects/edit/:id",
                   meta: {
                     label: "Subjects",
                     icon: <BookOpen />,
@@ -73,6 +76,7 @@ function App() {
                   name: "departments",
                   list: "/departments",
                   show: "/departments/show/:id",
+                  edit: "/departments/edit/:id",
                   create: "/departments/create",
                   meta: {
                     label: "Departments",
@@ -102,6 +106,7 @@ function App() {
                   list: "/classes",
                   create: "/classes/create",
                   show: "/classes/show/:id",
+                  edit: "/classes/edit/:id",
                   meta: {
                     label: "Classes",
                     icon: <GraduationCap />,
@@ -136,6 +141,7 @@ function App() {
                     <Route index element={<SubjectsList />} />
                     <Route path="create" element={<CreateSubject />} />
                     <Route path="show/:id" element={<SubjectsShow />} />
+                    <Route path="edit/:id" element={<UpdateSubject />} />
                   </Route>
 
                   <Route path="departments">
@@ -159,6 +165,7 @@ function App() {
                     <Route index element={<ClassesList />} />
                     <Route path="create" element={<CreateClass />} />
                     <Route path="show/:id" element={<ClassShow />} />
+                    <Route path="edit/:id" element={<UpdateClass />} />
                   </Route>
                 </Route>
               </Routes>

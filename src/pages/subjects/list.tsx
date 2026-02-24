@@ -21,6 +21,7 @@ import { ShowButton } from "@/components/refine-ui/buttons/show";
 import { Subject } from "@/types";
 import { DEPARTMENT_OPTIONS } from "@/constants";
 import ActionButton from "@/components/actionButton";
+import { DeleteButton } from "@/components/refine-ui/buttons/delete";
 
 const SubjectListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,18 +69,29 @@ const SubjectListPage = () => {
         size: 140,
         header: () => <p className="column-title">Actions</p>,
         cell: ({ row }) => (
-          <ShowButton
-            resource="subjects"
-            recordItemId={row.original.id}
-            variant="outline"
-            size="sm"
-          >
-            <ActionButton type="view" />
-          </ShowButton>
+          <div className="flex items-center gap-2">
+            <ShowButton
+              resource="subjects"
+              recordItemId={row.original.id}
+              variant="outline"
+              size="sm"
+            >
+              <ActionButton type="view" />
+            </ShowButton>
+            <DeleteButton
+              resource="subjects"
+              recordItemId={row.original.id}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer"
+            >
+              <ActionButton type="delete" />
+            </DeleteButton>
+          </div>
         ),
       },
     ],
-    []
+    [],
   );
 
   const departmentFilters =

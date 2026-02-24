@@ -33,6 +33,7 @@ const ClassShow = () => {
 
   const { query } = useShow<ClassDetails>({
     resource: "classes",
+    id: classId,
   });
 
   const classDetails = query.data?.data;

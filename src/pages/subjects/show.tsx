@@ -52,6 +52,7 @@ const SubjectsShow = () => {
 
   const { query } = useShow<SubjectDetails>({
     resource: "subjects",
+    queryOptions: { enabled: !!subjectId },
   });
 
   const details = query.data?.data;
@@ -126,7 +127,7 @@ const SubjectsShow = () => {
         ),
       },
     ],
-    []
+    [],
   );
 
   const userColumns = useMemo<ColumnDef<SubjectUser>[]>(
@@ -178,7 +179,7 @@ const SubjectsShow = () => {
         ),
       },
     ],
-    []
+    [],
   );
 
   const classesTable = useTable<SubjectClass>({

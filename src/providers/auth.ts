@@ -87,10 +87,28 @@ export const authProvider: AuthProvider = {
     }
   },
   logout: async () => {
-    const { error } = await authClient.signOut();
+    try {
+      const { error } = await authClient.signOut();
 
-    if (error) {
-      console.error("Logout error:", error);
+      if (error) {
+        console.error("Logout error:", error);
+        return {
+          success: false,
+          error: {
+            name: "Logout failed",
+            message: "Unable to log out. Please try again.",
+          },
+        };
+      }
+
+      localStorage.removeItem("user");
+
+      return {
+        success: true,
+        redirectTo: "/login",
+      };
+    } catch (error) {
+      console.error("Logout exception:", error);
       return {
         success: false,
         error: {
@@ -99,13 +117,6 @@ export const authProvider: AuthProvider = {
         },
       };
     }
-
-    localStorage.removeItem("user");
-
-    return {
-      success: true,
-      redirectTo: "/login",
-    };
   },
   onError: async (error) => {
     if (error.response?.status === 401) {
@@ -139,25 +150,31 @@ export const authProvider: AuthProvider = {
     const user = localStorage.getItem("user");
 
     if (!user) return null;
-    const parsedUser: User = JSON.parse(user);
-
-    return {
-      role: parsedUser.role,
-    };
+    try {
+      const parsedUser: User = JSON.parse(user);
+      return { role: parsedUser.role };
+    } catch {
+      localStorage.removeItem("user");
+      return null;
+    }
   },
   getIdentity: async () => {
     const user = localStorage.getItem("user");
 
     if (!user) return null;
-    const parsedUser: User = JSON.parse(user);
-
-    return {
-      id: parsedUser.id,
-      name: parsedUser.name,
-      email: parsedUser.email,
-      image: parsedUser.image,
-      role: parsedUser.role,
-      imageCldPubId: parsedUser.imageCldPubId,
-    };
+    try {
+      const parsedUser: User = JSON.parse(user);
+      return {
+        id: parsedUser.id,
+        name: parsedUser.name,
+        email: parsedUser.email,
+        image: parsedUser.image,
+        role: parsedUser.role,
+        imageCldPubId: parsedUser.imageCldPubId,
+      };
+    } catch {
+      localStorage.removeItem("user");
+      return null;
+    }
   },
 };

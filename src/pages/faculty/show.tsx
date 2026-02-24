@@ -174,6 +174,9 @@ const FacultyShow = () => {
         pageSize: 10,
         mode: "server",
       },
+      queryOptions: {
+        enabled: !!userId,
+      },
     },
   });
 
@@ -184,6 +187,9 @@ const FacultyShow = () => {
       pagination: {
         pageSize: 10,
         mode: "server",
+      },
+      queryOptions: {
+        enabled: !!userId,
       },
     },
   });

@@ -15,6 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
   useLink,
@@ -22,11 +29,14 @@ import {
   useRefineOptions,
   useRegister,
 } from "@refinedev/core";
+import { ROLE_OPTIONS } from "@/constants";
 
 export const SignUpForm = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("student");
 
   const { open } = useNotification();
 
@@ -38,6 +48,15 @@ export const SignUpForm = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!name.trim()) {
+      open?.({
+        type: "error",
+        message: "Name is required",
+        description: "Please enter your full name.",
+      });
+      return;
+    }
 
     if (password !== confirmPassword) {
       open?.({
@@ -52,7 +71,9 @@ export const SignUpForm = () => {
 
     register({
       email,
+      name,
       password,
+      role,
     });
   };
 
@@ -105,7 +126,7 @@ export const SignUpForm = () => {
           <CardDescription
             className={cn("text-muted-foreground", "font-medium")}
           >
-            Welcome to lorem ipsum dolor.
+            Welcome to the Classroom Management System.
           </CardDescription>
         </CardHeader>
 
@@ -114,15 +135,43 @@ export const SignUpForm = () => {
         <CardContent className={cn("px-0")}>
           <form onSubmit={handleSignUp}>
             <div className={cn("flex", "flex-col", "gap-2")}>
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+
+            <div className={cn("flex", "flex-col", "gap-2", "mt-6")}>
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder=""
+                placeholder="your@email.com"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+            </div>
+
+            <div className={cn("flex", "flex-col", "gap-2", "mt-6")}>
+              <Label htmlFor="role">Role</Label>
+              <Select value={role} onValueChange={setRole}>
+                <SelectTrigger id="role">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ROLE_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div
@@ -221,7 +270,7 @@ export const SignUpForm = () => {
         <Separator />
 
         <CardFooter>
-          <div className={cn("w-full", "text-center text-sm")}>
+          <div className={cn("w-full", "text-center", "text-sm")}>
             <span className={cn("text-sm", "text-muted-foreground")}>
               Have an account?{" "}
             </span>
@@ -243,4 +292,4 @@ export const SignUpForm = () => {
   );
 };
 
-SignUpForm.displayName = "SignUpForm";
+SignUpForm.displayName = "SignUpForm";                 

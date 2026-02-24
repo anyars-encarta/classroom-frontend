@@ -41,6 +41,21 @@ const options: CreateDataProviderOptions = {
         if (filter.value == null) return;
         
         const value = String(filter.value)
+
+        if (field === "role") {
+          params.role = value;
+        }
+
+        if (resource === "departments") {
+          if (field === "name" || field === "code") params.search = value;
+        }
+
+        if (resource === "users") {
+          if (field === "search" || field === "name" || field === "email") {
+            params.search = value;
+          }
+        }
+        
         if (resource === "subjects") {
           if (field === "department") params.department = value;
           if (field === "name" || field === "code") params.search = value;
@@ -85,6 +100,27 @@ const options: CreateDataProviderOptions = {
     },
   },
 
+  update: {
+    getEndpoint: ({ resource, id }) => `${resource}/${id}`,
+    buildBodyParams: ({ variables }) => variables,
+    mapResponse: async (response) => {
+      if(!response.ok) throw await buildHttpError(response);
+
+      const json: CreateResponse = await response.json();
+
+      return json.data ?? null;
+    },
+  },
+  
+  deleteOne: {
+    getEndpoint: ({ resource, id }) => `${resource}/${id}`,
+    mapResponse: async (response) => {
+      if(!response.ok) throw await buildHttpError(response);
+
+      return null;
+    },
+  },
+
   getOne: {
     getEndpoint: ({ resource, id }) => `${resource}/${id}`,
     mapResponse: async (response) => {
@@ -95,6 +131,14 @@ const options: CreateDataProviderOptions = {
       return json.data ?? null;
     },
   },
+  // getApiUrl: () => "",
+  // // optional methods
+  // getMany: ({ resource, ids, meta }) => Promise,
+  // createMany: ({ resource, variables, meta }) => Promise,
+  // deleteMany: ({ resource, ids, variables, meta }) => Promise,
+  // updateMany: ({ resource, ids, variables, meta }) => Promise,
+  // custom: ({ url, method, filters, sorters, payload, query, headers, meta }) =>
+  //   Promise,
 }
 
 const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);

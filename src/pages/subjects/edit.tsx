@@ -3,7 +3,7 @@ import { useForm } from "@refinedev/react-hook-form";
 import { useBack, useList, type BaseRecord, type HttpError } from "@refinedev/core";
 import * as z from "zod";
 
-import { CreateView } from "@/components/refine-ui/views/create-view";
+import { EditView } from "@/components/refine-ui/views/edit-view";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,9 +25,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 import type { Department } from "@/types";
 
-const subjectCreateSchema = z.object({
+const subjectEditSchema = z.object({
   departmentId: z.coerce
     .number({
       required_error: "Department is required",
@@ -41,16 +42,16 @@ const subjectCreateSchema = z.object({
     .min(5, "Subject description must be at least 5 characters"),
 });
 
-type SubjectFormValues = z.infer<typeof subjectCreateSchema>;
+type SubjectFormValues = z.infer<typeof subjectEditSchema>;
 
-const SubjectsCreate = () => {
+const EditSubject = () => {
   const back = useBack();
 
   const form = useForm<BaseRecord, HttpError, SubjectFormValues>({
-    resolver: zodResolver(subjectCreateSchema),
+    resolver: zodResolver(subjectEditSchema),
     refineCoreProps: {
       resource: "subjects",
-      action: "create",
+      action: "edit",
     },
     defaultValues: {
       departmentId: 0,
@@ -81,17 +82,17 @@ const SubjectsCreate = () => {
     try {
       await onFinish(values);
     } catch (error) {
-      console.error("Error creating subject:", error);
+      console.error("Error updating subject:", error);
     }
   };
 
   return (
-    <CreateView className="class-view">
+    <EditView className="class-view">
       <Breadcrumb />
 
-      <h1 className="page-title">Create a Subject</h1>
+      <h1 className="page-title">Edit Subject</h1>
       <div className="intro-row">
-        <p>Provide the required information below to add a subject.</p>
+        <p>Update the subject information below.</p>
         <Button onClick={() => back()}>Go Back</Button>
       </div>
 
@@ -101,7 +102,7 @@ const SubjectsCreate = () => {
         <Card className="class-form-card">
           <CardHeader className="relative z-10">
             <CardTitle className="text-2xl pb-0 font-bold text-gradient-orange">
-              Fill out form
+              Update form
             </CardTitle>
           </CardHeader>
 
@@ -198,16 +199,30 @@ const SubjectsCreate = () => {
                   )}
                 />
 
-                <Button type="submit" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Subject"}
+                <Separator />
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <div className="flex gap-1">
+                      <span>Updating Subject...</span>
+                      <Loader2 className="inline-block ml-2 animate-spin" />
+                    </div>
+                  ) : (
+                    "Update Subject"
+                  )}
                 </Button>
               </form>
             </Form>
           </CardContent>
         </Card>
       </div>
-    </CreateView>
+    </EditView>
   );
 };
 
-export default SubjectsCreate;
+export default EditSubject;

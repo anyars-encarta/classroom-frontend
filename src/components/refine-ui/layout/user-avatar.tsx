@@ -16,13 +16,13 @@ export function UserAvatar() {
   const { data: user, isLoading: userIsLoading } = useGetIdentity<User>();
 
   if (userIsLoading || !user) {
-    return <Skeleton className={cn("h-10", "w-10", "rounded-full")} />;
+    return <Skeleton className={cn("h-10", "w-10", "rounded-full bg-sidebar-foreground")} />;
   }
 
   const { fullName, avatar } = user;
 
   return (
-    <Avatar className={cn("h-10", "w-10")}>
+    <Avatar className={cn("h-10", "w-10", "bg-sidebar-foreground", "cursor-pointer")}>
       {avatar && <AvatarImage src={avatar} alt={fullName} />}
       <AvatarFallback>{getInitials(fullName)}</AvatarFallback>
     </Avatar>

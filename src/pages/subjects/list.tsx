@@ -1,29 +1,100 @@
-import { CreateButton } from "@/components/refine-ui/buttons/create";
-import { DataTable } from "@/components/refine-ui/data-table/data-table";
-import { DataTableFilterCombobox } from "@/components/refine-ui/data-table/data-table-filter";
-import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
-import { ListView } from "@/components/refine-ui/views/list-view";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useTable } from "@refinedev/react-table";
+import { ColumnDef } from "@tanstack/react-table";
+
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Department, Subject } from "@/types";
-import { SelectValue } from "@radix-ui/react-select";
-import { useList } from "@refinedev/core";
-import { useTable } from "@refinedev/react-table";
-import { ColumnDef } from "@tanstack/table-core";
-import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { ListView } from "@/components/refine-ui/views/list-view";
+import { CreateButton } from "@/components/refine-ui/buttons/create";
+import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
+import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { ShowButton } from "@/components/refine-ui/buttons/show";
 
-const SubjectsList = () => {
+import { Subject } from "@/types";
+import { DEPARTMENT_OPTIONS } from "@/constants";
+import ActionButton from "@/components/actionButton";
+import { DeleteButton } from "@/components/refine-ui/buttons/delete";
+
+const SubjectListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("all");
 
-  const departmentFilter =
+  const subjectColumns = useMemo<ColumnDef<Subject>[]>(
+    () => [
+      {
+        id: "code",
+        accessorKey: "code",
+        size: 100,
+        header: () => <p className="column-title ml-2">Code</p>,
+        cell: ({ getValue }) => <Badge>{getValue<string>()}</Badge>,
+      },
+      {
+        id: "name",
+        accessorKey: "name",
+        size: 200,
+        header: () => <p className="column-title">Name</p>,
+        cell: ({ getValue }) => (
+          <span className="text-foreground">{getValue<string>()}</span>
+        ),
+        filterFn: "includesString",
+      },
+      {
+        id: "department",
+        accessorKey: "department.name",
+        size: 150,
+        header: () => <p className="column-title">Department</p>,
+        cell: ({ getValue }) => (
+          <Badge variant="secondary">{getValue<string>()}</Badge>
+        ),
+      },
+      {
+        id: "description",
+        accessorKey: "description",
+        size: 300,
+        header: () => <p className="column-title">Description</p>,
+        cell: ({ getValue }) => (
+          <span className="truncate line-clamp-2">{getValue<string>()}</span>
+        ),
+      },
+      {
+        id: "actions",
+        size: 140,
+        header: () => <p className="column-title">Actions</p>,
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <ShowButton
+              resource="subjects"
+              recordItemId={row.original.id}
+              variant="outline"
+              size="sm"
+            >
+              <ActionButton type="view" />
+            </ShowButton>
+            <DeleteButton
+              resource="subjects"
+              recordItemId={row.original.id}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer"
+            >
+              <ActionButton type="delete" />
+            </DeleteButton>
+          </div>
+        ),
+      },
+    ],
+    [],
+  );
+
+  const departmentFilters =
     selectedDepartment === "all"
       ? []
       : [
@@ -34,7 +105,7 @@ const SubjectsList = () => {
           },
         ];
 
-  const searchFilter = searchQuery
+  const searchFilters = searchQuery
     ? [
         {
           field: "name",
@@ -44,83 +115,25 @@ const SubjectsList = () => {
       ]
     : [];
 
-    const { query: departmentsQuery } = useList<Department>({
-      resource: "departments",
-      pagination: {
-        pageSize: 100,
-      },
-    });
-
-  const departments = useMemo(
-    () => departmentsQuery?.data?.data ?? [],
-    [departmentsQuery?.data?.data],
-  );
-  const departmentsLoading = departmentsQuery?.isLoading ?? false;
-
   const subjectTable = useTable<Subject>({
-    columns: useMemo<ColumnDef<Subject>[]>(
-      () => [
-        {
-          id: "code",
-          accessorKey: "code",
-          size: 100,
-          header: () => <p className="column-title ml-2">Code</p>,
-          cell: ({ getValue }) => <Badge>{getValue<string>()}</Badge>,
-        },
-        {
-          id: "name",
-          accessorKey: "name",
-          size: 200,
-          header: () => <p className="column-title">Name</p>,
-          cell: ({ getValue }) => (
-            <span className="text-foreground">{getValue<string>()}</span>
-          ),
-          filterFn: "includesString",
-        },
-        {
-          id: "department",
-          accessorKey: "department.name",
-          size: 150,
-          header: ({ column }) => (
-            <div className="flex items-center gap-1">
-              <span>Department</span>
-              <DataTableFilterCombobox
-                column={column}
-                defaultOperator="eq"
-                options={
-                  departments?.map(( {name}: { name: string} ) => ({
-                    label: name,
-                    value: String(name),
-                  })) || []
-                }
-                placeholder="Filter by department"
-              />
-            </div>
-          ),
-          cell: ({ getValue }) => (
-            <Badge variant="secondary">{getValue<string>()}</Badge>
-          ),
-        },
-        {
-          id: "description",
-          accessorKey: "description",
-          size: 300,
-          header: () => <p className="column-title">Description</p>,
-          cell: ({ getValue }) => (
-            <span className="truncate line-clamp-2">{getValue<string>()}</span>
-          ),
-        },
-      ],
-      [departments],
-    ),
+    columns: subjectColumns,
     refineCoreProps: {
       resource: "subjects",
-      pagination: { pageSize: 10, mode: "server" },
+      pagination: {
+        pageSize: 10,
+        mode: "server",
+      },
       filters: {
-        permanent: [...departmentFilter, ...searchFilter],
+        // Compose refine filters from the current UI selections.
+        permanent: [...departmentFilters, ...searchFilters],
       },
       sorters: {
-        initial: [{ field: "id", order: "desc" }],
+        initial: [
+          {
+            field: "id",
+            order: "desc",
+          },
+        ],
       },
     },
   });
@@ -128,7 +141,6 @@ const SubjectsList = () => {
   return (
     <ListView>
       <Breadcrumb />
-
       <h1 className="page-title">Subjects</h1>
 
       <div className="intro-row">
@@ -137,13 +149,12 @@ const SubjectsList = () => {
         <div className="actions-row">
           <div className="search-field">
             <Search className="search-icon" />
-
             <Input
               type="text"
-              placeholder="Search by name"
+              placeholder="Search by name..."
               className="pl-10 w-full"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(event) => setSearchQuery(event.target.value)}
             />
           </div>
 
@@ -151,25 +162,22 @@ const SubjectsList = () => {
             <Select
               value={selectedDepartment}
               onValueChange={setSelectedDepartment}
-              disabled={departmentsLoading}
             >
-              <SelectTrigger>
+              <SelectTrigger className="">
                 <SelectValue placeholder="Filter by department" />
               </SelectTrigger>
 
               <SelectContent>
                 <SelectItem value="all">All Departments</SelectItem>
-                {departments?.map(
-                  ({ id, name }: { id: number; name: string }) => (
-                    <SelectItem key={id} value={name}>
-                      {name}
-                    </SelectItem>
-                  ),
-                )}
+                {DEPARTMENT_OPTIONS.map((department) => (
+                  <SelectItem key={department.value} value={department.value}>
+                    {department.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 
-            <CreateButton />
+            <CreateButton resource="subjects" />
           </div>
         </div>
       </div>
@@ -179,4 +187,4 @@ const SubjectsList = () => {
   );
 };
 
-export default SubjectsList;
+export default SubjectListPage;

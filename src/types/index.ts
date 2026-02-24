@@ -119,4 +119,5 @@ export type SignUpPayload = {
     image?: string;
     imageCldPubId?: string;
     role: UserRole;
+    department?: string;
 };

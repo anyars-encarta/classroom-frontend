@@ -158,7 +158,7 @@ const FacultyShow = () => {
             variant="outline"
             size="sm"
           >
-            <ActionButton type="View" />
+            <ActionButton type="view" />
           </ShowButton>
         ),
       },

@@ -191,10 +191,15 @@ const Dashboard = () => {
     },
   ];
 
+  const user = localStorage.getItem("user");
+
   return (
     <div className="space-y-6">
       <div>
+        <div className="flex items-center justify-between">
         <h1 className="page-title">Dashboard</h1>
+        <span className="text-primary">Welcome, {user ? JSON.parse(user).name : "Guest"}</span>
+        </div>
         <p className="text-muted-foreground">
           A quick snapshot of the latest activity and key metrics.
         </p>

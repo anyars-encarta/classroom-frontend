@@ -13,13 +13,13 @@ export const authProvider: AuthProvider = {
   }: SignUpPayload) => {
     try {
       const { data, error } = await authClient.signUp.email({
-        name,
+        name: name || "",
         email,
         password,
-        image,
-        role,
-        imageCldPubId,
-      } as SignUpPayload);
+        role: role || "student",
+        image: image || "",
+        imageCldPubId: imageCldPubId || "",
+      });
 
       if (error) {
         return {
@@ -33,7 +33,9 @@ export const authProvider: AuthProvider = {
       }
 
       // Store user data
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (data?.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
 
       return {
         success: true,
@@ -53,8 +55,8 @@ export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
     try {
       const { data, error } = await authClient.signIn.email({
-        email: email,
-        password: password,
+        email,
+        password,
       });
 
       if (error) {
@@ -69,7 +71,9 @@ export const authProvider: AuthProvider = {
       }
 
       // Store user data
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (data?.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
 
       return {
         success: true,
